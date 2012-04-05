@@ -1,0 +1,36 @@
+1. CODING CONVENTIONS
+
+  1. C++
+
+    Try to follow google's style guide: https://code.google.com/p/google-styleguide/
+    With a few modifications:
+
+      1. Indentation
+        Use tabs instead of spaces, any special alignment should be done with a tab width of 4.
+
+      2. Boost libraries
+        Boost libraries which provide platform abstraction are allowed.
+
+      3. File names
+        The C++ file extension to be used is ".cpp".
+
+      4. Casting
+        C style casting should be used when doing void pointer to function pointer conversions
+        when dealing dynamic linking.
+
+  2. CMake files
+
+    1. Indentation
+      Use two spaces for indentation.
+
+    2. Commands and macros
+      Use lower case for commands and put a space between the command and its parameter(s).
+      e.g.:
+        set (VAR val)
+
+    3. Variables
+      Use upper case for variables.
+
+    4. Vim modeline
+       The vim modeline "# vim: ts=2:sw=2" should be the last line of each file.
+       This helps following the indentation convention.
