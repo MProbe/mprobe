@@ -466,15 +466,23 @@ void Analysis::variableBoundLineSample(int funcType, int func, bool extraHists)
 			const int var = variablePresences[j]; // shorthand
 
 			// Generate values within the bounds for this variable
-			variateGen.distribution() = uniform_real<Real>(lowerBound(var), upperBound(var));
+			if (std::abs(lowerBound(var) - upperBound(var)) > std::numeric_limits<Real>::epsilon()*100)
+			{
+				variateGen.distribution() = uniform_real<Real>(lowerBound(var), upperBound(var));
+				// Generate the values
+				endPt1[var] = variateGen();
+				endPt2[var] = variateGen();
 
-			// Generate the values
-			endPt1[var] = variateGen();
-			endPt2[var] = variateGen();
-
-			// Add contribution to line length
-			const Real delta = endPt1[var] - endPt2[var];
-			lineLength += delta * delta;
+				// Add contribution to line length
+				const Real delta = endPt1[var] - endPt2[var];
+				lineLength += delta * delta;
+			}
+			else
+			{
+				// This is to avoid violating some preconditions which leads to freezing.
+				endPt1[var] = lowerBound(var);
+				endPt2[var] = upperBound(var);
+			}
 		}
 
 		lineLength = std::sqrt(lineLength);
@@ -588,7 +596,7 @@ void Analysis::variableBoundLineSample(int funcType, int func, bool extraHists)
 			}
 
 			const Real interpVal = endPt1Val + j * valueFraction;
-			const Real delta = interpVal - interiorPtVal;
+			const Real delta = interpVal - interiorPtVal; // FIXME: Catastrophic cancellation may occur from this calculation
 			shape.accumulatePoint(delta);
 			if (extraHists)
 				m_shapeHist.accumulatePoint(delta);
