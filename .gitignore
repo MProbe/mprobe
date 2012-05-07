@@ -1,0 +1,59 @@
+# Backup/temporary files:
+*~
+*.bak
+.*.swp
+
+# Generated binary files:
+*.o
+*.lo
+*.a
+*.la
+*.gmo
+*.pyc
+*.obj
+*.lib
+*.exe
+*.dll
+
+# Doxygen files
+/doc/html
+/doc/latex
+# LaTeX generated (binary) files
+*.aux
+*.log
+*.out
+*.pdf
+*.toc
+
+*.manifest
+*.suo
+*.user
+
+# CScope:
+/.cscope
+.cscope*
+cscope.out
+
+# Eclipse CDT
+.project
+.cproject
+.settings/
+
+# KDevelop4
+/.kdev4/
+/.kdev_include_paths
+
+# Patches
+*.patch
+*.diff
+*.rej
+*.orig
+
+#Mac Stuff
+.DS_Store
+*.pbxuser
+*.perspectivev3
+
+# build folders
+/build
+
