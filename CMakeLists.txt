@@ -109,7 +109,7 @@ endif ()
 
 find_package (POCO QUIET REQUIRED)
 pkg_check_modules (OS os)
-find_package(Boost 1.48.0 REQUIRED)
+find_package(Boost 1.48.0 COMPONENTS filesystem REQUIRED)
 
 if (OS_FOUND)
   include_directories(${OS_INCLUDE_DIRS})
@@ -141,6 +141,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ##################################################################
 # Now setup targets
 ##################################################################
+add_subdirectory (3rdparty)
 add_subdirectory (src)
 
 

@@ -1,8 +1,10 @@
-add_library (hardcoded SHARED hardcoded.cpp)
-set_target_properties (hardcoded PROPERTIES COMPILE_FLAGS "-DBUILDING_RP_DLL")
-
 if (OS_FOUND)
-  add_library (optimizationservices SHARED os.cpp)
+  add_library (optimizationservices SHARED optimizationservices.cpp)
   set_target_properties (optimizationservices PROPERTIES COMPILE_FLAGS "-DBUILDING_RP_DLL")
   target_link_libraries (optimizationservices ${POCO_LIBRARIES} ${OS_LIBRARIES})
 endif ()
+
+include_directories (${GAMS_API_INCLUDE_DIRS})
+add_library (gams SHARED gams.cpp ${GAMS_API_SOURCES})
+set_target_properties (gams PROPERTIES COMPILE_FLAGS "-DBUILDING_RP_DLL")
+target_link_libraries (gams ${POCO_LIBRARIES} ${Boost_LIBRARIES})
