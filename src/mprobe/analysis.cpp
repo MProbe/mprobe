@@ -117,7 +117,7 @@ void Analysis::resetBounds()
 void Analysis::clampBounds(Real mag)
 {
 	mag = std::abs(mag);
-	for (int idx = 0; idx < 2*m_problem->variables()+2; ++idx)
+	for (int idx = 0; idx < 2*m_problem->variables(); ++idx)
 		if (std::abs(m_bounds[idx]) > mag)
 			m_bounds[idx] = copysign(mag, m_bounds[idx]);
 }
