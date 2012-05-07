@@ -76,7 +76,7 @@ int main(int argc, const char** argv)
 
 	if (mp_loadedPlugins() <= 0)
 	{
-		std::cerr << "No plugins loaded from file: " << argv[0];
+		std::cerr << "No plugins loaded from file: " << argv[1];
 		std::cerr << "\n Exiting...\n";
 		mprobe_deinit();
 		return 1;
@@ -199,7 +199,7 @@ int main(int argc, const char** argv)
 	std::cout << "\t\tinequalities: " << quadineq << std::endl;
 	std::cout << "\t\tranges: " << quadrng << std::endl;
 	std::cout << "\t\tequalites: " << quadeq << std::endl;
-	std::cout << "\tNonlinear: " << nonlinobjs << std::endl;
+	std::cout << "\tNonlinear: " << nonlinconst << std::endl;
 	std::cout << "\t\tinequalities: " << nonlinineq << std::endl;
 	std::cout << "\t\tranges: " << nonlinrng << std::endl;
 	std::cout << "\t\tequalites: " << nonlineq << std::endl;
