@@ -41,7 +41,7 @@ ReaderPluginDetails details = { "Optimisation Services", "", RP_NON_REENTRANT, 0
 class RPOSInstance
 {
 public:
-	RPOSInstance() : i(0),r(0),mps(0),nl(0), presencesComputed(false) {}
+	RPOSInstance() : i(0),r(0),mps(0),nl(0) {}
 	~RPOSInstance() {
 		if (r)
 			delete r;
@@ -54,20 +54,22 @@ public:
 		mps = 0;
 		nl = 0;
 	}
+
 	OSInstance* i;
+
 	OSiLReader* r;
 	OSmps2osil* mps;
 	OSnl2osil* nl;
-	const std::vector<int>& getVarCP(int var) { if (!presencesComputed) computePresences(); return varCP[var]; }
-	const std::vector<int>& getVarOP(int var) { if (!presencesComputed) computePresences(); return varOP[var]; }
-	const std::vector<int>& getConstrP(int constr) { if (!presencesComputed) computePresences(); return constrP[constr]; }
-	const std::vector<int>& getObjP(int obj) { if (!presencesComputed) computePresences(); return objP[obj]; }
+
+	void computePresences(); // Must be called once the OSInstance has been set!
+	const std::vector<int>& getVarCP(int var) { return varCP[var]; }
+	const std::vector<int>& getVarOP(int var) { return varOP[var]; }
+	const std::vector<int>& getConstrP(int constr) { return constrP[constr]; }
+	const std::vector<int>& getObjP(int obj) { return objP[obj]; }
 private:
-	void computePresences();
 	void loopOverLCCols(int col, int curStart, int nextStart, std::vector<std::set<int> >&, std::vector<std::set<int> >&);
 	void loopOverLCRows(int row, int curStart, int nextStart, std::vector<std::set<int> >&, std::vector<std::set<int> >&);
 	std::vector<std::vector<int> > varCP, varOP, constrP, objP;
-	bool presencesComputed;
 };
 
 enum FileType {
@@ -177,6 +179,7 @@ RPHandle createInstance(int numFiles, const char** files)
 		}
 		instance->i = instance->mps->osinstance;
 	}
+	instance->computePresences();
 	return instance;
 }
 
@@ -195,13 +198,14 @@ int compatibleFiles(int numFiles, const char** files, int* compat)
 				compat[i] = 0;
 			break;
 		}
-		else if (compat)
+		else if (compat) // else unrecognized
 		{
 			compat[i] = 1;
 		}
 	}
-	if (compat)
-		for (; i < numFiles; i++)
+
+	if (compat) // Mark remainder as unrecognized
+		for (++i; i < numFiles; i++)
 			compat[i] = 1;
 	return foundOne? numFiles-1:-1;
 }
@@ -610,6 +614,7 @@ void RPOSInstance::computePresences()
 
 	InstanceData* idata = i->instanceData;
 
+	// We use these to remove duplicates while constructing the data, then transfer the it
 	std::vector<std::set<int> > objP_tmp, constrP_tmp, varCP_tmp, varOP_tmp;
 
 	objP_tmp.assign(i->getObjectiveNumber(), std::set<int>());
@@ -657,7 +662,7 @@ void RPOSInstance::computePresences()
 			}
 			else
 			{
-				assert(ccoeffs->iNumberOfStartElements >= idata->constraints->numberOfConstraints);
+				assert(lccoeffs->iNumberOfStartElements >= idata->constraints->numberOfConstraints);
 				//"Less linear constraint coefficient start elements than expected,"
 
 				int terminalStartVal;
@@ -768,7 +773,6 @@ void RPOSInstance::computePresences()
 			{
 				objP[i].insert(objP[i].end(), objP_tmp[i].begin(), objP_tmp[i].end());
 			}
-			presencesComputed = true;
 		}
 	} catch (const ErrorClass& e) {
 		std::cerr << e.errormsg << std::endl; // This is about all this error class is useful for.
